@@ -22,7 +22,7 @@ void tokenise(const char* input){
     int i=0;
     while(input[i]){
 
-        if(isspace(input[i])){
+        if(isspace(input[i]) || input[i]=='"' ){
             i++;
             continue;
         }
@@ -58,7 +58,7 @@ void tokenise(const char* input){
         else{
             char buffer[256];
             int j=0;
-            while(input[i] && !(isspace(input[i]))&& input[i]!='>' && input[i]!='<' && input[i]!='|' && input[i]!='&' && input[i]!=';' ){
+            while(input[i] && !(isspace(input[i]))&& input[i]!='>' && input[i]!='<' && input[i]!='|' && input[i]!='&' && input[i]!=';'&& input[i]!='"' ){
                 buffer[j]=input[i];
                 i++;j++;
             }
@@ -154,6 +154,7 @@ int parse_shell_cmd(){
         }   
 
     }
+    
     if(peek()->type!=TOK_END){
         return 0;
     }

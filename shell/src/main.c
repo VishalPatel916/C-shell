@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <signal.h>
+#include <sys/wait.h>
 #include "prompt.h"
 #include "input.h"
 #include "parser.h"
@@ -11,8 +13,15 @@
 #include "reveal.h"
 #include "log.h"
 #include "arbitarycommand.h"
+#include "redirection.h"
+#include "sequential.h"
+#include "activity.h"
+#include "keysignal.h"
+#include "fgbg.h"
 
 int main(){
+    signal(SIGINT, sigint_handler);
+    signal(SIGTSTP, sigtstp_handler);
     char **cmd=(char**)malloc(sizeof(char*)*15);
     for(int i=0;i<15;i++){
         cmd[i]=(char*)malloc(sizeof(char)*1024);
@@ -24,28 +33,66 @@ int main(){
         perror("getcwd");
         return 1;
     }
-
+    char *backgroundName;
     while(1){
-        
+        // for(int j=0;j<job_count;j++){
+        //     printf("cammand %s %d\n",jobs[j]->command,jobs[j]->state);
+        // }
+        signal(SIGINT, sigint_handler);
+        signal(SIGTSTP, sigtstp_handler);
         char *str;
-        if(imp_cmd==-1){
+        if(imp_cmd < 0){
             prompt_print(home_dir);
+            // fflush(stdout);
             str=input();
+            if (!str) {        
+                handle_eof();
+            }
         }
         else{
             strcpy(str,cmd[imp_cmd]);
-            imp_cmd=-1;
+            imp_cmd=-2;
         }
+        //llm code start
+        pid_t pid;
+        int status;
+        while ((pid= waitpid(-1, &status, WNOHANG)) > 0) {
+
+            for(int i=0;i<job_count;i++){
+                if(jobs[i]->pid==pid){
+                    backgroundName=jobs[i]->command;
+                    for(int j=i;j<job_count-1;j++){
+                        jobs[j]=jobs[j+1];
+                    }
+                    job_count--;
+                    break;
+                }
+            }
+            if (WIFEXITED(status)) {              
+                printf("%s with pid %d exited normally\n",backgroundName,pid);
+            }
+            else{
+                printf("%s with pid %d exited abnormally\n",backgroundName,pid);
+            }
+        }
+        // llm code end
         tokenise(str);
         if(!parse_shell_cmd()){
             printf("%s\n","Invalid Syntax!");
             continue;
         }
-        // printf("%d\n",tok_count);
-        // for(int i=0;i<tok_count;i++){
-        //     printf("%s\n",tokens[i].value);
-        // }
-        if(strcmp(tokens[0].value,"hop")==0){
+        
+        
+        int no_comma=0;
+        for(int i=0;i<tok_count;i++){
+            if(tokens[i].type==TOK_COMMA || tokens[i].type==TOK_AND ){
+                no_comma++;
+            }
+        }
+        if(no_comma>0){
+           sequential();
+        }
+        else if(strcmp(tokens[0].value,"hop")==0){
             hop(home_dir,prev_dir);
         }
         else if(strcmp(tokens[0].value,"reveal")==0){
@@ -54,10 +101,23 @@ int main(){
         else if(strcmp(tokens[0].value,"log")==0){
             imp_cmd=lo_g(cmd,&index,&flag);
         }
-        else{
-            arbtry_cmd();
+        else if(strcmp(tokens[0].value,"activities")==0){
+            activity();
         }
-        if(strcmp(tokens[0].value,"log")!=0){
+        else if(strcmp(tokens[0].value,"ping")==0){
+            ping();
+        }
+        else if(strcmp(tokens[0].value,"fg")==0){
+            fg();
+        }
+        else if(strcmp(tokens[0].value,"bg")==0){
+            bg();
+        }
+        else{
+            redirection(0);
+        }
+        if( strcmp(tokens[0].value,"log")!=0 && imp_cmd!=-2){
+            imp_cmd=-1;
             if(index>0){
                 if(strcmp(cmd[((index-1)%15)],str)!=0){
                     strcpy(cmd[(index%15)],str);

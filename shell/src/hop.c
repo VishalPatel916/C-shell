@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
+#include <linux/limits.h>
 #include <unistd.h>
 #include <stdlib.h>  
 #include "parser.h"

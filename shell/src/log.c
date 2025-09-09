@@ -19,8 +19,8 @@ int lo_g(char **cmd ,int *index,int *flag){
             imp_cmd=imp_cmd%15;
         }
         else{
-            if(*index>no_cmd){
-                imp_cmd=(*index)-no_cmd-1;
+            if(*index>=no_cmd){
+                imp_cmd=(*index)-no_cmd;
             }
         }
 

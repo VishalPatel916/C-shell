@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <limits.h>
+#include <linux/limits.h>
 #include "reveal.h"
 #include <string.h>
 #include "parser.h"
@@ -16,6 +16,7 @@ void reveal(char *home,char *prev_dir){
     int l=0,a=0;
     char *sym;
     for(int i=1;i<tok_count-1;i++){
+        
         sym=tokens[i].value;
         if(sym[0]=='-' && strlen(sym)>1){
             for(int j=1;sym[j];j++){

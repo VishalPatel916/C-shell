@@ -11,7 +11,6 @@ char* input(){
     size_t size=0;
     //scanf(" %[^\n]",str);
     if(getline(&str,&size,stdin)==-1){
-        printf("error in getline \n");
         return NULL;
     }
 

@@ -2,6 +2,8 @@
 
 #define ARBITARYCOMMAND_H
 
-void arbtry_cmd();
+void arbtry_cmd(int p);
+void piping(int p);
+
 
 #endif
