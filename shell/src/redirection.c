@@ -36,7 +36,7 @@ void redirection(int p){
     if(f){
         fd=open(tokens[j+1].value,O_RDONLY);
         if(fd==-1){
-            printf("No such file or directory\n");
+            fprintf(stderr, "%s: No such file or directory \n", tokens[j+1].value);
             return;
         }
         dup2(fd,0);
@@ -64,7 +64,7 @@ void redirection(int p){
         }
              
         if(fd==-1){
-            printf("No such file or directory\n");
+            fprintf(stderr, "%s: Unable to create file for writing \n", tokens[j+1].value);
             return;
         }
         dup2(fd,1);

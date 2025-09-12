@@ -13,6 +13,8 @@
 #include "hop.h"
 #include "reveal.h"
 #include "log.h"
+#include "redirection.h"
+#include "sequential.h"
 #include "activity.h"
 #include "fgbg.h"
 
@@ -47,30 +49,38 @@ void arbtry_cmd(int p){
     else if(fg_pid==0){
         if(strcmp(tokens[p].value,"hop")==0){
             hop(home_dir,prev_dir,p);
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"reveal")==0){
             
             reveal(home_dir,prev_dir,p);
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"log")==0){
             int index,flag;
             lo_g(cmd,&index,&flag,p);
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"activities")==0){
             activity();
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"ping")==0){
             ping(p);
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"fg")==0){
             fg(p);
+            exit(0);
         }
         else if(strcmp(tokens[p].value,"bg")==0){
             bg(p);
+            exit(0);
         }
         else if(execvp(cmd[0],cmd)==-1){
             fprintf(stderr, "%s: Command not found! \n", cmd[0]);
-            exit(EXIT_FAILURE);
+            perror("exec");
+            exit(1);
         }
     }
     else {
@@ -93,7 +103,8 @@ void piping(int p){
     }
     int i=0;
     char *cmd[n+1][tok_count];
-    int k=0;
+    int k=0;int sudotoken[p+n+1];
+    sudotoken[i]=p;
     for(int j=p;j<tok_count ;j++){
         if(tokens[j].type==TOK_COMMA || tokens[i].type==TOK_AND){
             cmd[i][k]=NULL;
@@ -101,8 +112,9 @@ void piping(int p){
             break;
         }
         if(tokens[j].type==TOK_PIPE || tokens[j].type==TOK_END){
-            cmd[i][k]=NULL;
+            cmd[i][k]=NULL;            
             i++;k=0;
+            sudotoken[i]=j+1;
         }
         else{
             cmd[i][k]=tokens[j].value; 
@@ -120,7 +132,7 @@ void piping(int p){
         int rc=fork();
 
         if(rc==0){
-            int k=0;int fd1,fd2;
+            int k=0;int fd1,fd2;int and=0;
             while(cmd[i][k]!=NULL){
                 if(strcmp(cmd[i][k],"<")==0){
                     s=0;
@@ -143,6 +155,10 @@ void piping(int p){
                     dup2(fd2,STDOUT_FILENO);
                     close(fd2);
                 }
+                else if(strcmp(cmd[i][k],"&")==0){
+                    and=1;
+                    cmd[i][k]=NULL;
+                }
                 k++;
             }
             
@@ -157,12 +173,52 @@ void piping(int p){
                 close(connect[j][0]);
                 close(connect[j][1]);
             }
-        
-           
-            execvp(cmd[i][0],cmd[i]);
-            perror("exec");
-            exit(1);
-    
+            if(strcmp(cmd[i][0],"hop")==0){
+                hop(home_dir,prev_dir,sudotoken[i]);
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"reveal")==0){
+                reveal(home_dir,prev_dir,sudotoken[i]);
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"log")==0){
+                int index,flag;
+                lo_g(cmd[i],&index,&flag,sudotoken[i]);
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"activities")==0){
+                activity();
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"ping")==0){
+                ping(sudotoken[i]);
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"fg")==0){
+                fg(sudotoken[i]);
+                exit(0);
+            }
+            else if(strcmp(cmd[i][0],"bg")==0){
+                bg(sudotoken[i]);
+                exit(0);
+            }
+            
+            else{
+                if(and){
+                    static int jo=0;
+                    jo++;
+                    jobs[job_count]=malloc(sizeof(job));
+                    jobs[job_count]->command=strdup(tokens[s].value);
+                    jobs[job_count]->pid=rc;
+                    jobs[job_count++]->state=Running;
+                    printf("[%d] %d\n",jo, rc);
+                }
+                if(execvp(cmd[i][0],cmd[i])==-1){
+                    fprintf(stderr, "%s: Command not found! \n", cmd[i][0]);
+                    exit(EXIT_FAILURE);
+                }
+                
+            }
         }
     }
     for(int j=0;j<n;j++){

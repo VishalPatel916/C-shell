@@ -68,12 +68,14 @@ void reveal(char *home,char *prev_dir,int p) {
         n=scandir(target,&files,NULL,lexico_ls);
     }   
     if(n<0){
-        printf("No such directory!\n");
-        return ;
+        printf("No such directory! \n");
+        return;
     }
     char *name;
-   
-    for(int i=0;i<n;i++){
+    int i=0;
+    if(l&& (!a)){i=2;}
+    for(;i<n;i++){
+        
         name=files[i]->d_name;
         if(a==1){
             printf("%s ",name);
