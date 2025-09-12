@@ -14,7 +14,7 @@
 
 FILE *logm_file = NULL;
 float LOSS_PROBABILITY=0;
-
+int mode=1;
 void logm(char *msg) {
     if (logm_file==NULL){
         return;
@@ -49,7 +49,7 @@ int send_packet(int sockfd, struct sockaddr_in *server_addr, struct sham_header 
 }
 
 
-int recieve_packet(int sockfd, struct sockaddr_in *server_addr, struct sham_header *header, char *data, int *data_len) {
+int recieve_packet(int sockfd, struct sockaddr_in *server_addr, struct sham_header *header, char *data, int *data_len,int prev) {
     
     socklen_t addr_len = sizeof(*server_addr);
     char buffer[PAYLOAD_SIZE + sizeof(struct sham_header)];
@@ -76,8 +76,8 @@ int recieve_packet(int sockfd, struct sockaddr_in *server_addr, struct sham_head
     else {
         *data_len = 0;
     }
-    if (*data_len > 0) {
-    
+    if (*data_len > 0 && mode==0 && (prev==1 || (prev!=1 && header->seq_num!=prev))) {
+
         printf("server: %s\n", data);
     }
     return n;
@@ -111,7 +111,7 @@ int connection_handshake(int *sockfd,struct sockaddr_in *server_addr){
                 }
                 // Wait for final ACK
     
-                int n=recieve_packet(*sockfd, server_addr, &header, buffer, &data_len);
+                int n=recieve_packet(*sockfd, server_addr, &header, buffer, &data_len,1);
                 if(n< 0){
                     retransmission=1;
                     sprintf(logmmsg, "TIMEOUT SYN SEQ=%u", syn.seq_num);
@@ -148,7 +148,7 @@ int connection_handshake(int *sockfd,struct sockaddr_in *server_addr){
 
             int ret = select((*sockfd)+1, &rd, NULL, NULL, &tv);
             if (ret > 0 && FD_ISSET(*sockfd, &rd)) {
-                int m = recieve_packet(*sockfd, server_addr, &header, buffer, &data_len);
+                int m = recieve_packet(*sockfd, server_addr, &header, buffer, &data_len,1);
                 if (m > 0 && (header.flags & (SYN | ACK))) {
                     // Duplicate SYN-ACK → resend ACK
                     //send_packet(*sockfd, server_addr, &ack, NULL, 0);
@@ -173,7 +173,7 @@ void finish_rcv(struct sham_header header, int sockfd, struct sockaddr_in server
     char logmmsg[200];
     char buffer[PAYLOAD_SIZE];
     int data_len;
-    
+    LOSS_PROBABILITY=0;
     sprintf(logmmsg, "RCV FIN SEQ=%u", header.seq_num);
     logm(logmmsg);
 
@@ -196,7 +196,7 @@ void finish_rcv(struct sham_header header, int sockfd, struct sockaddr_in server
         if (ret > 0 && FD_ISSET(sockfd, &rd)) {
             struct sham_header temp_header;
             
-            recieve_packet(sockfd, &server_addr, &temp_header, buffer, &data_len);
+            recieve_packet(sockfd, &server_addr, &temp_header, buffer, &data_len,1);
             if (temp_header.flags & FIN) {
                 sprintf(logmmsg, "RCV DUP FIN SEQ=%u, resending ACK", temp_header.seq_num);
                 logm(logmmsg);
@@ -225,7 +225,7 @@ void finish_rcv(struct sham_header header, int sockfd, struct sockaddr_in server
             logm(logmmsg);
         }
 
-        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
         if (n < 0) {
             retransmission = 1;
             sprintf(logmmsg, "TIMEOUT for final ACK of our FIN SEQ=%u", fin_syn.seq_num);
@@ -251,7 +251,7 @@ void finish_snd(int sockfd, struct sockaddr_in server_addr, int seq_no) {
     int data_len;
     struct sham_header header;
     int f = 1, retransmission = 0;
-
+    LOSS_PROBABILITY=0;
     while (f) {
         struct sham_header fin;
         fin.seq_num = seq_no;
@@ -267,7 +267,7 @@ void finish_snd(int sockfd, struct sockaddr_in server_addr, int seq_no) {
             logm(logmmsg);
         }
 
-        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
         if (n < 0) {
             retransmission = 1;
             sprintf(logmmsg, "TIMEOUT SEQ=%u for FIN's ACK", seq_no);
@@ -288,7 +288,7 @@ void finish_snd(int sockfd, struct sockaddr_in server_addr, int seq_no) {
 
     while (1) {
        
-        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+        int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
         
         if (n > 0 && (header.flags & FIN)) {
             sprintf(logmmsg, "RCV FIN SEQ=%u ", header.seq_num);
@@ -313,9 +313,8 @@ void finish_snd(int sockfd, struct sockaddr_in server_addr, int seq_no) {
 }
 
 int main(int argc,char* argv[]) {
-    
     int sockfd;
-    int mode=1;
+    
     srand(time(NULL));
     if(argc>3 && strcmp(argv[3],"--chat")==0){
         printf("chat\n");
@@ -332,18 +331,23 @@ int main(int argc,char* argv[]) {
         SERVER_PORT=atoi(argv[2]);
         server_ip=argv[1];
     }
-    logm_file = fopen("client_log.txt", "w");
     
-    if (logm_file==NULL) {
-        perror("logm file failed");
-        exit(EXIT_FAILURE);
-    }
-
     if ((sockfd=socket(AF_INET,SOCK_DGRAM,0))< 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
 
+    char *log_env = getenv("RUDP_LOG");
+    if (log_env != NULL && strcmp(log_env, "1") == 0) {
+        logm_file = fopen("client_log.txt", "w");
+        if (logm_file == NULL) {
+            perror("logm file failed");
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        logm_file = NULL; 
+    }
+    
     struct timeval time;
     time.tv_sec=0;
     time.tv_usec=500000;
@@ -391,7 +395,7 @@ int main(int argc,char* argv[]) {
                     sprintf(logmmsg, "SND SYN SEQ=%u WIN=%d", syn_hdr.seq_num, syn_hdr.window_size);
                     logm(logmmsg);
                 }
-                int n=recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+                int n=recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
                 if (n < 0){
                     retransmission=1;
                     sprintf(logmmsg, "TIMEOUT SEQ=%u", seq_no);
@@ -426,7 +430,7 @@ int main(int argc,char* argv[]) {
                         logm(logmmsg);
                     }
                                        
-                    int n=recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+                    int n=recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
                     if (n < 0){
                         retransmission=1;
                         sprintf(logmmsg, "TIMEOUT SEQ=%u", seq_no);
@@ -456,7 +460,7 @@ int main(int argc,char* argv[]) {
 
    
     fd_set rd;
-
+    int prev=1;
     while (1) {
         FD_ZERO(&rd);
 
@@ -465,10 +469,10 @@ int main(int argc,char* argv[]) {
 
         int maxfd=(sockfd > 0 ? sockfd : 0)+1;
 
-        int activity=select(maxfd,&rd,NULL,NULL,NULL);
+        select(maxfd,&rd,NULL,NULL,NULL);
 
         if( FD_ISSET(sockfd,&rd)){
-            int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+            int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,prev);
             if (n < 0){
                 continue;
             }
@@ -524,7 +528,7 @@ int main(int argc,char* argv[]) {
                         sprintf(logmmsg, "SND SYN SEQ=%u WIN=%d", syn_hdr.seq_num, syn_hdr.window_size);
                         logm(logmmsg);
                     }
-                    int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len);
+                    int n = recieve_packet(sockfd, &server_addr, &header, buffer, &data_len,1);
                     if (n < 0){
                         retransmission=1;
                         sprintf(logmmsg, "TIMEOUT SEQ=%u", seq_no);

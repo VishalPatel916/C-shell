@@ -2,6 +2,6 @@
 
 #define REVEAL_H
 
-void reveal(char * home,char *pre_dir);
+void reveal(char * home,char *pre_dir,int p);
 
 #endif

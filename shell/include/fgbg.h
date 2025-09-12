@@ -2,7 +2,7 @@
 
 #define FGBG_H
 
-void fg();
-void bg();
+void fg(int p);
+void bg(int p);
 
 #endif

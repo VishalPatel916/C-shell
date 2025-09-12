@@ -9,6 +9,12 @@
 #include "parser.h"
 #include "redirection.h"
 #include <linux/limits.h>
+#include "parser.h"
+#include "hop.h"
+#include "reveal.h"
+#include "log.h"
+#include "activity.h"
+#include "fgbg.h"
 
 int fg_pid=-1;
 
@@ -39,7 +45,33 @@ void arbtry_cmd(int p){
         return;
     }
     else if(fg_pid==0){
-        execvp(cmd[0],cmd);
+        if(strcmp(tokens[p].value,"hop")==0){
+            hop(home_dir,prev_dir,p);
+        }
+        else if(strcmp(tokens[p].value,"reveal")==0){
+            
+            reveal(home_dir,prev_dir,p);
+        }
+        else if(strcmp(tokens[p].value,"log")==0){
+            int index,flag;
+            lo_g(cmd,&index,&flag,p);
+        }
+        else if(strcmp(tokens[p].value,"activities")==0){
+            activity();
+        }
+        else if(strcmp(tokens[p].value,"ping")==0){
+            ping(p);
+        }
+        else if(strcmp(tokens[p].value,"fg")==0){
+            fg(p);
+        }
+        else if(strcmp(tokens[p].value,"bg")==0){
+            bg(p);
+        }
+        else if(execvp(cmd[0],cmd)==-1){
+            fprintf(stderr, "%s: Command not found! \n", cmd[0]);
+            exit(EXIT_FAILURE);
+        }
     }
     else {
         int status;
@@ -125,9 +157,12 @@ void piping(int p){
                 close(connect[j][0]);
                 close(connect[j][1]);
             }
+        
+           
             execvp(cmd[i][0],cmd[i]);
             perror("exec");
             exit(1);
+    
         }
     }
     for(int j=0;j<n;j++){

@@ -14,7 +14,7 @@ typedef struct{
 
 void activity();
 void update();
-void ping();
+void ping(int p);
 
 extern job* jobs[];
 extern int job_count;

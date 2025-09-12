@@ -21,5 +21,7 @@ int parse_shell_cmd();
 extern Token tokens[];
 extern int tok_count;
 extern int current;
+extern char home_dir[];
+extern char prev_dir[];
 
 #endif

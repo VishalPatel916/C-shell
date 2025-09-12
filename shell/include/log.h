@@ -2,6 +2,6 @@
 
 #define LOG_H
 
-int lo_g(char **cmd ,int *index,int *flag);
+int lo_g(char **cmd ,int *index,int *flag,int p);
 
 #endif

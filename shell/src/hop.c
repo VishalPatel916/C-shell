@@ -5,15 +5,15 @@
 #include <stdlib.h>  
 #include "parser.h"
 
-void hop(char *home_dir,char * prev_dir) {
+void hop(char *home_dir,char * prev_dir,int p) {
     char* sym;
     char* home=home_dir;
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
 
-    for (int i = 1; i < tok_count-1; i++) {
+    for (int i = p+1; i < tok_count-1; i++) {
         sym = tokens[i].value;
-
+        
         if (strcmp(sym, "~") == 0) {
     
             if (chdir(home) == 0) {
@@ -38,7 +38,10 @@ void hop(char *home_dir,char * prev_dir) {
         else if (strcmp(sym, ".") == 0) {
            
         }
-        else {
+        else if ((strcmp(sym, ";") == 0)|| (strcmp(sym, "&") == 0) || (strcmp(sym, "|") == 0)|| (strcmp(sym, ">>") == 0) || (strcmp(sym, ">") == 0) || (strcmp(sym, "<") == 0) || (strcmp(sym, ",") == 0)){
+           break;
+        }
+        else { 
             if (chdir(sym) == 0) {
                 strcpy(prev_dir, cwd);
                 getcwd(cwd, sizeof(cwd));

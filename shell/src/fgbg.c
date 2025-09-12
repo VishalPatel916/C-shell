@@ -5,13 +5,13 @@
 #include "activity.h"
 #include "parser.h"
 #include "sequential.h"
-void fg(){
+void fg(int p){
     int job_no;
-    if(tok_count<=2){
+    if(tok_count<=2+p){
         job_no=job_count-1;
     }
     else{
-        job_no=atoi(tokens[1].value);
+        job_no=atoi(tokens[1+p].value);
         job_no--;
     }
     if(job_no>=job_count){
@@ -41,13 +41,13 @@ void fg(){
         job_count--;
     }
 }
-void bg(){
+void bg(int p){
     int job_no;
-    if(tok_count<=2){
+    if(tok_count<=2+p){
         job_no=job_count-1;
     }
     else{
-        job_no=atoi(tokens[1].value);
+        job_no=atoi(tokens[1+p].value);
         job_no--;
     }
 

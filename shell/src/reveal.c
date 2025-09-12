@@ -10,12 +10,16 @@ int lexico( const struct dirent **a , const struct dirent **b){
     return strcmp((*a)->d_name,(*b)->d_name);
 }
 
-void reveal(char *home,char *prev_dir){
+int lexico_ls(const struct dirent **a, const struct dirent **b) {
+    return strcoll((*a)->d_name, (*b)->d_name);
+}
+
+void reveal(char *home,char *prev_dir,int p) {
     char target[PATH_MAX];
-    strcpy(target,home);
+    getcwd(target, sizeof(target));
     int l=0,a=0;
-    char *sym;
-    for(int i=1;i<tok_count-1;i++){
+    char *sym;int c=0;
+    for(int i=p+1;i<tok_count-1;i++){
         
         sym=tokens[i].value;
         if(sym[0]=='-' && strlen(sym)>1){
@@ -27,6 +31,7 @@ void reveal(char *home,char *prev_dir){
                     l=1;
                 }
             }
+            
         }
         else if(strcmp(sym,"~")==0){
             strcpy(target,home);
@@ -35,20 +40,39 @@ void reveal(char *home,char *prev_dir){
             if(strlen(prev_dir)>0){
                 strcpy(target,prev_dir);
             }
+            else{
+                printf("No such directory!\n");
+                return ;
+            }
+        }
+        else if ((strcmp(sym, ";") == 0)|| (strcmp(sym, "&") == 0) || (strcmp(sym, "|") == 0) || (strcmp(sym,"<")==0)||(strcmp(sym,">")==0) || (strcmp(sym,">>")==0) ){
+           break;
         }
         else{
             strcpy(target,sym);
+            c++;
         }
 
     }
+    if(c>1){
+        printf("reveal: Invalid Syntax!\n");
+        return ;
+    }
     struct dirent **files;
-    int n=scandir(target,&files,NULL,lexico);
-
+    
+    int n;
+    if(l || a){
+        n=scandir(target,&files,NULL,lexico);
+    }
+    else{
+        n=scandir(target,&files,NULL,lexico_ls);
+    }   
     if(n<0){
         printf("No such directory!\n");
         return ;
     }
     char *name;
+   
     for(int i=0;i<n;i++){
         name=files[i]->d_name;
         if(a==1){
@@ -63,5 +87,8 @@ void reveal(char *home,char *prev_dir){
             printf("\n");
         }
 
+    }
+    if(!l){
+        printf("\n");
     }
 }

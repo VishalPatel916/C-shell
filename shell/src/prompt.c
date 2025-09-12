@@ -42,7 +42,7 @@ void prompt_print(const char *home_dir){
         snprintf(display_path,sizeof(display_path),"%s",cwd);
     }
 
-    printf("%s@%s:%s>",username,hostname,display_path);
+    printf("<%s@%s:%s> ",username,hostname,display_path);
 
 
 }

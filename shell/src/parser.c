@@ -55,6 +55,7 @@ void tokenise(const char* input){
                 i++;
             }                      
         }
+        
         else{
             char buffer[256];
             int j=0;
@@ -131,7 +132,9 @@ int parse_cmd_group(){
 }
 
 int parse_shell_cmd(){
-
+    if(peek()->type==TOK_END){
+        return 1;
+    }
     if(parse_cmd_group()==0){
         return 0;
     }

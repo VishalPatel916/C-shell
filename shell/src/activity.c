@@ -62,10 +62,10 @@ void activity(){
     }
 }
 
-void ping(){
-    if(tok_count>3){
-        int pid=atoi(tokens[1].value);
-        int signal_number=atoi(tokens[2].value);
+void ping(int p){
+    if(tok_count>3+p){
+        int pid=atoi(tokens[1+p].value);
+        int signal_number=atoi(tokens[2+p].value);
         int actual_signal = signal_number % 32;
         if(kill(pid,actual_signal)==-1){
             if (errno == ESRCH) {

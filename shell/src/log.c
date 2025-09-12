@@ -4,14 +4,14 @@
 #include "log.h"
 #include "parser.h"
 
-int lo_g(char **cmd ,int *index,int *flag){
+int lo_g(char **cmd ,int *index,int *flag,int p){
     int f=*flag;
-    if(strcmp(tokens[1].value,"purge")==0){
+    if(strcmp(tokens[p+1].value,"purge")==0){
         *index=0;
         *flag=0;
     }
-    else if(strcmp(tokens[1].value,"execute")==0){
-        int no_cmd=atoi(tokens[2].value);
+    else if(strcmp(tokens[p+1].value,"execute")==0){
+        int no_cmd=atoi(tokens[p+2].value);
         int imp_cmd=-1;
         
         if(f){

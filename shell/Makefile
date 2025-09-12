@@ -9,8 +9,7 @@ CFLAGS = -std=c99 \
 
 SRC_DIR = src
 OBJ_DIR = build
-BIN_DIR = shell
-TARGET = $(BIN_DIR)/shell.out
+TARGET = shell.out
 
 # Find all .c files in src/
 SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -19,20 +18,17 @@ OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 all: $(TARGET)
 
-# Link final binary
-$(TARGET): $(OBJS) | $(BIN_DIR)
+# Link final binary (in project root)
+$(TARGET): $(OBJS) | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
 # Compile each .c -> .o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Ensure build and shell directories exist
+# Ensure build directory exists
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
-
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
 
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)

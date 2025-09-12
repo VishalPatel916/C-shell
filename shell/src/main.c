@@ -19,20 +19,24 @@
 #include "keysignal.h"
 #include "fgbg.h"
 
+char home_dir[PATH_MAX];
+char prev_dir[PATH_MAX];
+
 int main(){
     signal(SIGINT, sigint_handler);
     signal(SIGTSTP, sigtstp_handler);
     char **cmd=(char**)malloc(sizeof(char*)*15);
+    
     for(int i=0;i<15;i++){
         cmd[i]=(char*)malloc(sizeof(char)*1024);
     }
     int index=0,flag=0,imp_cmd=-1;
-    char home_dir[PATH_MAX];
-    char prev_dir[PATH_MAX];
+    
     if (!getcwd(home_dir, sizeof(home_dir))) {
         perror("getcwd");
         return 1;
     }
+    
     char *backgroundName;
     while(1){
         // for(int j=0;j<job_count;j++){
@@ -83,35 +87,39 @@ int main(){
         }
         
         
-        int no_comma=0;
+        int no_comma=0;int pip=0;
+        
         for(int i=0;i<tok_count;i++){
             if(tokens[i].type==TOK_COMMA || tokens[i].type==TOK_AND ){
                 no_comma++;
+            }
+            if(tokens[i].type==TOK_PIPE || tokens[i].type==TOK_OUTPUT || tokens[i].type==TOK_OUTPUT_APPEND || tokens[i].type==TOK_INPUT ){
+                pip++;
             }
         }
         if(no_comma>0){
            sequential();
         }
-        else if(strcmp(tokens[0].value,"hop")==0){
-            hop(home_dir,prev_dir);
+        else if(!pip &&strcmp(tokens[0].value,"hop")==0){
+            hop(home_dir,prev_dir,0);
         }
-        else if(strcmp(tokens[0].value,"reveal")==0){
-            reveal(home_dir,prev_dir);
+        else if(!pip && strcmp(tokens[0].value,"reveal")==0){
+            reveal(home_dir,prev_dir,0);
         }
-        else if(strcmp(tokens[0].value,"log")==0){
-            imp_cmd=lo_g(cmd,&index,&flag);
+        else if(!pip && strcmp(tokens[0].value,"log")==0){
+            imp_cmd=lo_g(cmd,&index,&flag,0);
         }
-        else if(strcmp(tokens[0].value,"activities")==0){
+        else if(!pip &&strcmp(tokens[0].value,"activities")==0){
             activity();
         }
-        else if(strcmp(tokens[0].value,"ping")==0){
-            ping();
+        else if(!pip &&strcmp(tokens[0].value,"ping")==0){
+            ping(0);
         }
-        else if(strcmp(tokens[0].value,"fg")==0){
-            fg();
+        else if(!pip && strcmp(tokens[0].value,"fg")==0){
+            fg(0);
         }
-        else if(strcmp(tokens[0].value,"bg")==0){
-            bg();
+        else if(!pip && strcmp(tokens[0].value,"bg")==0){
+            bg(0);
         }
         else{
             redirection(0);

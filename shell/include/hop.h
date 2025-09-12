@@ -2,6 +2,6 @@
 
 #define HOP_H
 
-void hop(char *home_dir,char * prev_dir);
+void hop(char *home_dir,char * prev_dir,int p);
 
 #endif
