@@ -1,0 +1,14 @@
+{
+    "test_id": "test_85",
+    "section": "C.3",
+    "description": "Tests that redirecting output to a directory results in an error.",
+    "passed": false,
+    "failure": {
+        "step_index": 0,
+        "command": "echo hello > test/folder1",
+        "reason": "Mismatch at sequential line 0",
+        "expected": "Unable to create file for writing",
+        "actual": "test/folder1: Unable to create file for writing "
+    },
+    "score": 0.0
+}

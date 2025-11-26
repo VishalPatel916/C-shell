@@ -1,0 +1,39 @@
+{
+    "testcase": {
+        "section": "E.3",
+        "description": "Tests that Ctrl+D on an empty line exits the shell. Note: This does not check for the 'logout' message.",
+        "cmds": [
+            {
+                "expect_exit": true,
+                "code": "d"
+            }
+        ],
+        "timeout": 2.0,
+        "strict_prompt": false,
+        "requires_test_folder": false
+    },
+    "events": [
+        {
+            "time": "2025-11-19T22:23:59.695348+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        },
+        {
+            "time": "2025-11-19T22:23:59.695678+05:30",
+            "type": "input",
+            "details": "ControlSignal(expect_exit=True, code='d')"
+        },
+        {
+            "time": "2025-11-19T22:23:59.696486+05:30",
+            "type": "output",
+            "details": "logout"
+        },
+        {
+            "time": "2025-11-19T22:24:00.138245+05:30",
+            "type": "eof",
+            "details": "EOF received from child:\n    <pexpect.pty_spawn.spawn object at 0x78f0144fea80>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_a4c0ad2ed1c1429e9bbd0d7f266ac480', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp9bfw280q:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: <class 'pexpect.exceptions.EOF'>\n    match: <class 'pexpect.exceptions.EOF'>\n    match_index: 2\n    exitstatus: None\n    flag_eof: True\n    pid: 1091902\n    child_fd: 98\n    closed: False\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x78f0171922c0>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1"
+        }
+    ],
+    "raw_log": "##### START RAW OUTPUT #####\n<osnuser@osntesting:~> \u0004logout\r\n",
+    "py_log": "2025-11-19 22:23:59,161 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - INFO - Spawned child:\n    <pexpect.pty_spawn.spawn object at 0x78f0144fea80>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_a4c0ad2ed1c1429e9bbd0d7f266ac480', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp9bfw280q:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: None\n    match: None\n    match_index: None\n    exitstatus: None\n    flag_eof: False\n    pid: 1091902\n    child_fd: 98\n    closed: False\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x78f0171922c0>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-19 22:23:59,695 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-19T22:23:59.695348+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-19 22:23:59,695 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-19T22:23:59.695678+05:30\",\n        \"type\": \"input\",\n        \"details\": \"ControlSignal(expect_exit=True, code='d')\"\n    }\n2025-11-19 22:23:59,696 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-19T22:23:59.696486+05:30\",\n        \"type\": \"output\",\n        \"details\": \"logout\"\n    }\n2025-11-19 22:24:00,138 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-19T22:24:00.138245+05:30\",\n        \"type\": \"eof\",\n        \"details\": \"EOF received from child:\\n    <pexpect.pty_spawn.spawn object at 0x78f0144fea80>\\n    command: /usr/bin/docker\\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_a4c0ad2ed1c1429e9bbd0d7f266ac480', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp9bfw280q:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\\n    buffer (last 100 chars): ''\\n    before (last 100 chars): ''\\n    after: <class 'pexpect.exceptions.EOF'>\\n    match: <class 'pexpect.exceptions.EOF'>\\n    match_index: 2\\n    exitstatus: None\\n    flag_eof: True\\n    pid: 1091902\\n    child_fd: 98\\n    closed: False\\n    timeout: 2.0\\n    delimiter: <class 'pexpect.exceptions.EOF'>\\n    logfile: <tester.FlexibleIO object at 0x78f0171922c0>\\n    logfile_read: None\\n    logfile_send: None\\n    maxread: 2000\\n    ignorecase: False\\n    searchwindowsize: None\\n    delaybeforesend: 0.05\\n    delayafterclose: 0.1\\n    delayafterterminate: 0.1\"\n    }\n2025-11-19 22:24:00,142 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - INFO - Finished running testcase. Child info at exit:\n    <pexpect.pty_spawn.spawn object at 0x78f0144fea80>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_a4c0ad2ed1c1429e9bbd0d7f266ac480', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp9bfw280q:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: <class 'pexpect.exceptions.EOF'>\n    match: <class 'pexpect.exceptions.EOF'>\n    match_index: 2\n    exitstatus: 0\n    flag_eof: True\n    pid: 1091902\n    child_fd: 98\n    closed: False\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x78f0171922c0>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-19 22:24:00,142 - tester.0d590510-13dd-4c9a-a043-a25d06ca5ad9 - INFO - Cleaned up temp_dir: /tmp/tmp9bfw280q\n"
+}
