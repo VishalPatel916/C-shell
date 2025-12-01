@@ -1,0 +1,95 @@
+{
+    "testcase": {
+        "section": "D.2",
+        "description": "Tests that a non-existent command run in the background fails gracefully.",
+        "cmds": [
+            {
+                "expect_exit": false,
+                "skip_prompt_check": false,
+                "cmd": "iamnotarealcommand &",
+                "sequential_outputs": [
+                    {
+                        "text": "\\\\[1\\\\] \\\\d+",
+                        "is_re": true,
+                        "negative_match": false
+                    }
+                ],
+                "nonsequential_outputs": [],
+                "ignore_output": false,
+                "cwd_after": null
+            },
+            {
+                "expect_exit": false,
+                "skip_prompt_check": false,
+                "cmd": "",
+                "sequential_outputs": [],
+                "nonsequential_outputs": [
+                    {
+                        "text": "iamnotarealcommand with pid \\\\d+ exited abnormally",
+                        "is_re": true,
+                        "negative_match": false
+                    },
+                    {
+                        "text": "Command not found!",
+                        "is_re": false,
+                        "negative_match": false
+                    }
+                ],
+                "ignore_output": false,
+                "cwd_after": null
+            }
+        ],
+        "timeout": 2.0,
+        "strict_prompt": false,
+        "requires_test_folder": false
+    },
+    "events": [
+        {
+            "time": "2025-11-30T19:14:43.065214+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        },
+        {
+            "time": "2025-11-30T19:14:43.065476+05:30",
+            "type": "input",
+            "details": "GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='iamnotarealcommand &', sequential_outputs=[Line(text='\\\\\\\\[1\\\\\\\\] \\\\\\\\d+', is_re=True, negative_match=False)], nonsequential_outputs=[], ignore_output=False, cwd_after=None)"
+        },
+        {
+            "time": "2025-11-30T19:14:43.116501+05:30",
+            "type": "output",
+            "details": "[1] 28"
+        },
+        {
+            "time": "2025-11-30T19:14:43.116924+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        },
+        {
+            "time": "2025-11-30T19:14:43.117058+05:30",
+            "type": "input",
+            "details": "GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='', sequential_outputs=[], nonsequential_outputs=[Line(text='iamnotarealcommand with pid \\\\\\\\d+ exited abnormally', is_re=True, negative_match=False), Line(text='Command not found!', is_re=False, negative_match=False)], ignore_output=False, cwd_after=None)"
+        },
+        {
+            "time": "2025-11-30T19:14:43.167711+05:30",
+            "type": "output",
+            "details": "iamnotarealcommand: Command not found! "
+        },
+        {
+            "time": "2025-11-30T19:14:43.168089+05:30",
+            "type": "output",
+            "details": "exec: No such file or directory"
+        },
+        {
+            "time": "2025-11-30T19:14:43.168638+05:30",
+            "type": "output",
+            "details": "iamnotarealcommand with pid 28 exited normally"
+        },
+        {
+            "time": "2025-11-30T19:14:43.293112+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        }
+    ],
+    "raw_log": "##### START RAW OUTPUT #####\n<osnuser@osntesting:~> iamnotarealcommand &\n[1] 28\r\n<osnuser@osntesting:~> \niamnotarealcommand: Command not found! \r\nexec: No such file or directory\r\niamnotarealcommand with pid 28 exited normally\r\n<osnuser@osntesting:~> ",
+    "py_log": "2025-11-30 19:14:42,390 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - INFO - Spawned child:\n    <pexpect.pty_spawn.spawn object at 0x786e22b88530>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_5806ec0e71dd4280bd84f92e4ecefa1d', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp_ocw79_m:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: None\n    match: None\n    match_index: None\n    exitstatus: None\n    flag_eof: False\n    pid: 1317821\n    child_fd: 28\n    closed: False\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x786e22b53640>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-30 19:14:43,065 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.065214+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-30 19:14:43,065 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.065476+05:30\",\n        \"type\": \"input\",\n        \"details\": \"GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='iamnotarealcommand &', sequential_outputs=[Line(text='\\\\\\\\\\\\\\\\[1\\\\\\\\\\\\\\\\] \\\\\\\\\\\\\\\\d+', is_re=True, negative_match=False)], nonsequential_outputs=[], ignore_output=False, cwd_after=None)\"\n    }\n2025-11-30 19:14:43,116 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.116501+05:30\",\n        \"type\": \"output\",\n        \"details\": \"[1] 28\"\n    }\n2025-11-30 19:14:43,116 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.116924+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-30 19:14:43,117 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.117058+05:30\",\n        \"type\": \"input\",\n        \"details\": \"GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='', sequential_outputs=[], nonsequential_outputs=[Line(text='iamnotarealcommand with pid \\\\\\\\\\\\\\\\d+ exited abnormally', is_re=True, negative_match=False), Line(text='Command not found!', is_re=False, negative_match=False)], ignore_output=False, cwd_after=None)\"\n    }\n2025-11-30 19:14:43,167 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.167711+05:30\",\n        \"type\": \"output\",\n        \"details\": \"iamnotarealcommand: Command not found! \"\n    }\n2025-11-30 19:14:43,168 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.168089+05:30\",\n        \"type\": \"output\",\n        \"details\": \"exec: No such file or directory\"\n    }\n2025-11-30 19:14:43,168 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.168638+05:30\",\n        \"type\": \"output\",\n        \"details\": \"iamnotarealcommand with pid 28 exited normally\"\n    }\n2025-11-30 19:14:43,293 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T19:14:43.293112+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-30 19:14:43,799 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - INFO - Finished running testcase. Child info at exit:\n    <pexpect.pty_spawn.spawn object at 0x786e22b88530>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_5806ec0e71dd4280bd84f92e4ecefa1d', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp_ocw79_m:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: '<osnuser@osntesting:~> '\n    match: <re.Match object; span=(0, 23), match='<osnuser@osntesting:~> '>\n    match_index: 0\n    exitstatus: None\n    flag_eof: False\n    pid: 1317821\n    child_fd: -1\n    closed: True\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x786e22b53640>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-30 19:14:43,800 - tester.f7542cf1-dc0e-4e8c-a091-bd79abd95511 - INFO - Cleaned up temp_dir: /tmp/tmp_ocw79_m\n"
+}

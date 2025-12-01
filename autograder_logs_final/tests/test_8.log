@@ -1,0 +1,75 @@
+{
+    "testcase": {
+        "section": "A.3",
+        "description": "Tests a complex but valid chain of commands involving pipes, sequential execution, and backgrounding.",
+        "cmds": [
+            {
+                "expect_exit": false,
+                "skip_prompt_check": false,
+                "cmd": "a | b | c ; d | e &",
+                "sequential_outputs": [],
+                "nonsequential_outputs": [
+                    {
+                        "text": "Invalid Syntax!",
+                        "is_re": false,
+                        "negative_match": true
+                    }
+                ],
+                "ignore_output": true,
+                "cwd_after": null
+            }
+        ],
+        "timeout": 2.0,
+        "strict_prompt": false,
+        "requires_test_folder": false
+    },
+    "events": [
+        {
+            "time": "2025-11-30T07:00:45.493481+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        },
+        {
+            "time": "2025-11-30T07:00:45.493949+05:30",
+            "type": "input",
+            "details": "GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='a | b | c ; d | e &', sequential_outputs=[], nonsequential_outputs=[Line(text='Invalid Syntax!', is_re=False, negative_match=True)], ignore_output=True, cwd_after=None)"
+        },
+        {
+            "time": "2025-11-30T07:00:45.593033+05:30",
+            "type": "output",
+            "details": "a: Command not found! "
+        },
+        {
+            "time": "2025-11-30T07:00:45.593397+05:30",
+            "type": "output",
+            "details": "b: Command not found! "
+        },
+        {
+            "time": "2025-11-30T07:00:45.593641+05:30",
+            "type": "output",
+            "details": "c: Command not found! "
+        },
+        {
+            "time": "2025-11-30T07:00:45.593825+05:30",
+            "type": "output",
+            "details": "d: Command not found! "
+        },
+        {
+            "time": "2025-11-30T07:00:45.593991+05:30",
+            "type": "output",
+            "details": "[1] 0"
+        },
+        {
+            "time": "2025-11-30T07:00:45.594181+05:30",
+            "type": "output",
+            "details": "e: Command not found! "
+        },
+        {
+            "time": "2025-11-30T07:00:45.594358+05:30",
+            "type": "output",
+            "details": "<osnuser@osntesting:~> "
+        }
+    ],
+    "raw_log": "##### START RAW OUTPUT #####\n<osnuser@osntesting:~> a | b | c ; d | e &\na: Command not found! \r\nb: Command not found! \r\nc: Command not found! \r\nd: Command not found! \r\n[1] 0\r\ne: Command not found! \r\n<osnuser@osntesting:~> ",
+    "py_log": "2025-11-30 07:00:44,806 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - INFO - Spawned child:\n    <pexpect.pty_spawn.spawn object at 0x798480efb710>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_30b3285da54b4b35bf786c668c7bf69b', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp0h1a961c:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: None\n    match: None\n    match_index: None\n    exitstatus: None\n    flag_eof: False\n    pid: 2707278\n    child_fd: 81\n    closed: False\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x7985186422c0>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-30 07:00:45,493 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.493481+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-30 07:00:45,494 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.493949+05:30\",\n        \"type\": \"input\",\n        \"details\": \"GenericCmd(expect_exit=False, skip_prompt_check=False, cmd='a | b | c ; d | e &', sequential_outputs=[], nonsequential_outputs=[Line(text='Invalid Syntax!', is_re=False, negative_match=True)], ignore_output=True, cwd_after=None)\"\n    }\n2025-11-30 07:00:45,593 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.593033+05:30\",\n        \"type\": \"output\",\n        \"details\": \"a: Command not found! \"\n    }\n2025-11-30 07:00:45,593 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.593397+05:30\",\n        \"type\": \"output\",\n        \"details\": \"b: Command not found! \"\n    }\n2025-11-30 07:00:45,593 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.593641+05:30\",\n        \"type\": \"output\",\n        \"details\": \"c: Command not found! \"\n    }\n2025-11-30 07:00:45,593 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.593825+05:30\",\n        \"type\": \"output\",\n        \"details\": \"d: Command not found! \"\n    }\n2025-11-30 07:00:45,594 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.593991+05:30\",\n        \"type\": \"output\",\n        \"details\": \"[1] 0\"\n    }\n2025-11-30 07:00:45,594 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.594181+05:30\",\n        \"type\": \"output\",\n        \"details\": \"e: Command not found! \"\n    }\n2025-11-30 07:00:45,594 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - DEBUG - Received event:\n    {\n        \"time\": \"2025-11-30T07:00:45.594358+05:30\",\n        \"type\": \"output\",\n        \"details\": \"<osnuser@osntesting:~> \"\n    }\n2025-11-30 07:00:46,178 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - INFO - Finished running testcase. Child info at exit:\n    <pexpect.pty_spawn.spawn object at 0x798480efb710>\n    command: /usr/bin/docker\n    args: [b'/usr/bin/docker', b'run', b'--name', b'tester_30b3285da54b4b35bf786c668c7bf69b', b'-i', b'-t', b'--rm', b'--init', b'-h', b'osntesting', b'-v', b'/tmp/tmp0h1a961c:/app', b'-w', b'/app', b'shell_tester:latest', b'/app/shell.out']\n    buffer (last 100 chars): ''\n    before (last 100 chars): ''\n    after: '<osnuser@osntesting:~> '\n    match: <re.Match object; span=(0, 23), match='<osnuser@osntesting:~> '>\n    match_index: 0\n    exitstatus: 129\n    flag_eof: False\n    pid: 2707278\n    child_fd: -1\n    closed: True\n    timeout: 2.0\n    delimiter: <class 'pexpect.exceptions.EOF'>\n    logfile: <tester.FlexibleIO object at 0x7985186422c0>\n    logfile_read: None\n    logfile_send: None\n    maxread: 2000\n    ignorecase: False\n    searchwindowsize: None\n    delaybeforesend: 0.05\n    delayafterclose: 0.1\n    delayafterterminate: 0.1\n2025-11-30 07:00:46,256 - tester.47fe7ee0-12f8-42fd-bde7-be230606d144 - INFO - Cleaned up temp_dir: /tmp/tmp0h1a961c\n"
+}
